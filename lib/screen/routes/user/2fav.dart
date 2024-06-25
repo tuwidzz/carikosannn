@@ -1,25 +1,17 @@
-// 2fav.dart(user)
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:carikosannn/dto/fav.dart';
 
 class FavScreen extends StatelessWidget {
-  const FavScreen({super.key});
+  const FavScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final favorites = FavoritesManager().favorites;
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Riwayat Favorit'),
-      //   backgroundColor: const Color.fromARGB(255, 186, 143, 186),
-      //   automaticallyImplyLeading: false,
-      // ),
       backgroundColor: Colors.brown[50],
       body: favorites.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
                 'Belum ada riwayat Favorit.',
                 style: TextStyle(fontSize: 18),
@@ -30,8 +22,7 @@ class FavScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final kos = favorites[index];
                 return Card(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                   child: Padding(
@@ -39,46 +30,46 @@ class FavScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Container(
+                          height: 100,
+                          color: Colors.grey[300],
+                          child: kos.imagePath.isNotEmpty
+                              ? _buildKosImage(kos.imagePath)
+                              : Center(child: Text('No Image')),
+                        ),
+                        SizedBox(height: 10),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
-                              child: Container(
-                                height: 100,
-                                color: Colors.grey[300],
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    kos.name,
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    kos.description,
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                  Text(
+                                    'Rp. 999.999/Kamar/Bulan',
+                                    style: TextStyle(color: Colors.brown),
+                                  ),
+                                ],
                               ),
                             ),
                             IconButton(
-                              icon: const Icon(Icons.favorite),
+                              icon: Icon(Icons.favorite),
                               onPressed: () {
                                 FavoritesManager().removeFavorite(kos);
                               },
                             ),
                           ],
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          kos.name,
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 5),
-                        Row(
-                          children: const [
-                            Icon(Icons.star, color: Colors.amber, size: 16),
-                            Icon(Icons.star, color: Colors.amber, size: 16),
-                            Icon(Icons.star, color: Colors.amber, size: 16),
-                            Icon(Icons.star, color: Colors.amber, size: 16),
-                            Icon(Icons.star, color: Colors.amber, size: 16),
-                          ],
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          kos.description,
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                        const Text(
-                          'Rp. 999.999/Kamar/Bulan',
-                          style: TextStyle(color: Colors.brown),
                         ),
                       ],
                     ),
@@ -86,6 +77,13 @@ class FavScreen extends StatelessWidget {
                 );
               },
             ),
+    );
+  }
+
+  Widget _buildKosImage(String imagePath) {
+    return Image.asset(
+      imagePath,
+      fit: BoxFit.cover,
     );
   }
 }

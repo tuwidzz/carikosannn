@@ -379,57 +379,82 @@ class _HomeContentState extends State<HomeContent> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(kos.name),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 150,
-                color: Colors.grey[300],
-                child: kos.imagePath.isNotEmpty
-                    ? _buildKosImage(kos.imagePath)
-                    : const Center(child: Text('No Image')),
-              ),
-              // const SizedBox(height: 10),
-              // Text(
-              //   'Pemilik: ${kos.ownername}',
-              //   style: const TextStyle(fontSize: 16),
-              // ),
-              const SizedBox(height: 5),
-              Text(
-                'Kontak: ${kos.contact}',
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 5),
-              // Row(
-              //   children: List.generate(
-              //     kos.rating.round(),
-              //     (index) =>
-              //         const Icon(Icons.star, color: Colors.amber, size: 16),
-              //   ),
-              // ),
-              const SizedBox(height: 5),
-              Text(
-                kos.description,
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Rp. ${kos.price.toStringAsFixed(0)}/Kamar/Bulan',
-                style: const TextStyle(fontSize: 16, color: Colors.brown),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Close'),
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Container(
+                      height: 150,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                        color: Colors.grey[300],
+                      ),
+                      child: kos.imagePath.isNotEmpty
+                          ? _buildKosImage(kos.imagePath)
+                          : const Center(child: Text('No Image')),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.favorite_border),
+                      onPressed: () {
+                        // Implement favorite functionality here
+                        _showFavoriteAddedDialog(context);
+                      },
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        kos.name,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        children: const [
+                          Icon(Icons.star, color: Colors.amber, size: 16),
+                          Icon(Icons.star, color: Colors.amber, size: 16),
+                          Icon(Icons.star, color: Colors.amber, size: 16),
+                          Icon(Icons.star, color: Colors.amber, size: 16),
+                          Icon(Icons.star, color: Colors.amber, size: 16),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        kos.description,
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                      Text(
+                        'Rp. ${kos.price.toStringAsFixed(0)}/Kamar/Bulan',
+                        style: TextStyle(color: Colors.brown),
+                      ),
+                      const SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Implement booking functionality here
+                          // Example: Navigator.pushNamed(context, '/booking');
+                        },
+                        child: const Text('Booking'),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );
