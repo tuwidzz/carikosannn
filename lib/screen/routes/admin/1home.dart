@@ -3,7 +3,7 @@
 
 import 'dart:io';
 
-import 'package:carikosannn/dto/manager.dart';
+import 'package:carikosannn/dto/kos_manager.dart';
 import 'package:carikosannn/screen/routes/admin/add.dart';
 import 'package:carikosannn/screen/routes/admin/2history.dart';
 import 'package:carikosannn/screen/routes/admin/edit.dart';

@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:carikosannn/dto/kos.dart';
+import 'package:carikosannn/dto/book_manager.dart'; // Import the manager
 
 class KosDetailScreen extends StatelessWidget {
   final Kos kos;
@@ -33,22 +34,11 @@ class KosDetailScreen extends StatelessWidget {
                 'Nama: ${kos.name}',
                 style: const TextStyle(fontSize: 16),
               ),
-              // Text(
-              //   kos.name,
-              //   style: const TextStyle(
-              //     fontSize: 24,
-              //     fontWeight: FontWeight.bold,
-              //   ),
-              // ),
               const SizedBox(height: 8),
               Text(
                 'Alamat: ${kos.address}',
                 style: const TextStyle(fontSize: 16),
               ),
-              // Text(
-              //   kos.address,
-              //   style: const TextStyle(fontSize: 16),
-              // ),
               const SizedBox(height: 8),
               Text(
                 'Kota: ${kos.city}',
@@ -59,11 +49,6 @@ class KosDetailScreen extends StatelessWidget {
                 'Deskripsi: ${kos.description}',
                 style: const TextStyle(fontSize: 16),
               ),
-              // const SizedBox(height: 8),
-              // Text(
-              //   kos.description,
-              //   style: const TextStyle(fontSize: 16),
-              // ),
               const SizedBox(height: 8),
               Text(
                 'Fasilitas: ${kos.facilities}',
@@ -87,7 +72,7 @@ class KosDetailScreen extends StatelessWidget {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    // Implement booking functionality here
+                    BookedKosManager().addKos(kos); // Add booking functionality
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Booking berhasil!')),
                     );
@@ -95,7 +80,7 @@ class KosDetailScreen extends StatelessWidget {
                   child: const Text('Booking Sekarang'),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.brown,
-                    backgroundColor: Colors.white, // Text color
+                    backgroundColor: Colors.white,
                   ),
                 ),
               ),

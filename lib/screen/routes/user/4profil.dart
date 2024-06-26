@@ -3,6 +3,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:carikosannn/main.dart';
+import 'package:carikosannn/dto/book_manager.dart';
+
+import '../../widgets/book_screen.dart'; // Import BookScreen
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -65,6 +68,10 @@ class ProfileScreen extends StatelessWidget {
             const Divider(height: 0),
             buildListTile(Icons.history, 'Booking', () {
               // Navigasi ke halaman riwayat pembelian
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const BookScreen()),
+              );
             }),
             const Divider(height: 0),
             buildListTile(Icons.exit_to_app, 'Keluar', () {

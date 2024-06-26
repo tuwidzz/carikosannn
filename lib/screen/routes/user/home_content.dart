@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:carikosannn/dto/kos.dart';
-import 'package:carikosannn/dto/manager.dart';
+import 'package:carikosannn/dto/kos_manager.dart';
 import 'package:flutter/material.dart';
 import '2fav.dart';
 

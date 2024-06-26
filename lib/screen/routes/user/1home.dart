@@ -4,7 +4,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:carikosannn/dto/kos.dart';
-import 'package:carikosannn/dto/manager.dart';
+import 'package:carikosannn/dto/kos_manager.dart';
 import 'package:carikosannn/screen/routes/about.dart';
 import 'package:carikosannn/screen/routes/user/3chat.dart';
 import 'package:carikosannn/screen/routes/user/cs.dart';

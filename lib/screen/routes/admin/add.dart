@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../../dto/kos.dart';
-import '../../../dto/manager.dart';
+import '../../../dto/kos_manager.dart';
 
 class AddKos extends StatefulWidget {
   const AddKos({super.key});
