@@ -63,7 +63,7 @@ class ProfileScreen extends StatelessWidget {
               // Navigasi ke halaman edit profil
             }),
             const Divider(height: 0),
-            buildListTile(Icons.shopping_cart_outlined, 'Riwayat', () {
+            buildListTile(Icons.history, 'Booking', () {
               // Navigasi ke halaman riwayat pembelian
             }),
             const Divider(height: 0),

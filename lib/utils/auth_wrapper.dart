@@ -25,7 +25,7 @@ class AuthWrapper extends StatelessWidget {
               storedAccessToken == authCubit.state.accessToken) {
             return child; // Display the child screen if tokens match
           } else {
-            return const HomeScreen(); // Redirect if no token or mismatch
+            return HomeScreen(); // Redirect if no token or mismatch
           }
         } else {
           // Show a loading indicator while fetching the token

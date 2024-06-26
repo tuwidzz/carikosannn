@@ -2,6 +2,7 @@
 // ignore_for_file: sort_child_properties_last, library_private_types_in_public_api, prefer_const_constructors, use_key_in_widget_constructors, unnecessary_to_list_in_spreads, use_super_parameters
 
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:carikosannn/dto/kos.dart';
 import 'package:carikosannn/dto/manager.dart';
 import 'package:carikosannn/screen/routes/about.dart';
@@ -9,7 +10,7 @@ import 'package:carikosannn/screen/routes/user/3chat.dart';
 import 'package:carikosannn/screen/routes/user/cs.dart';
 import 'package:carikosannn/screen/routes/user/2fav.dart';
 import 'package:carikosannn/screen/routes/user/4profil.dart';
-import 'package:flutter/material.dart';
+import 'package:carikosannn/screen/widgets/detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,17 +21,38 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  List<Kos> favoriteKosList = [];
+
+  void _addKosToFavorites(Kos kos) {
+    setState(() {
+      favoriteKosList.add(kos);
+    });
+  }
 
   static final List<Widget> _widgetOptions = <Widget>[
-    HomeContent(),
-    const FavScreen(),
+    HomeContent(
+      onFavoriteAdded: (Kos) {},
+    ),
+    FavScreen(
+      favoriteKosList: [],
+    ),
     const ChatScreen(),
     const ProfileScreen(),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _widgetOptions[0] = HomeContent(onFavoriteAdded: _addKosToFavorites);
+    _widgetOptions[1] = FavScreen(favoriteKosList: favoriteKosList);
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      if (_selectedIndex == 1) {
+        _widgetOptions[1] = FavScreen(favoriteKosList: favoriteKosList);
+      }
     });
   }
 
@@ -148,6 +170,10 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class HomeContent extends StatefulWidget {
+  final Function(Kos) onFavoriteAdded;
+
+  const HomeContent({required this.onFavoriteAdded});
+
   @override
   _HomeContentState createState() => _HomeContentState();
 }
@@ -233,18 +259,29 @@ class _HomeContentState extends State<HomeContent> {
     );
   }
 
+  void _sortKosList(String criteria) {
+    setState(() {
+      if (criteria == 'Terendah') {
+        filteredKost.sort((a, b) => a.price.compareTo(b.price));
+      } else if (criteria == 'Tertinggi') {
+        filteredKost.sort((a, b) => b.price.compareTo(a.price));
+      }
+    });
+  }
+
   void _showFavoriteAddedDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text('Berhasil ditambahkan ke favorit!'),
+          title: Text('Favorit Ditambahkan'),
+          content: Text('Kos telah ditambahkan ke daftar favorit.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: Text('OK'),
             ),
           ],
         );
@@ -255,223 +292,134 @@ class _HomeContentState extends State<HomeContent> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 20),
-          TextField(
-            controller: searchController,
-            decoration: InputDecoration(
-              hintText: 'Mau cari kos di mana?',
-              prefixIcon: const Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              filled: true,
-              fillColor: const Color(0xFFF5F5F5),
-            ),
-          ),
-          const SizedBox(height: 10),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ElevatedButton.icon(
-                  onPressed: _showFilterDialog,
-                  icon: const Icon(Icons.filter_list),
-                  label: const Text('Filter'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD3BBA0),
-                    foregroundColor: Colors.white, // Change text color to white
-                    shape: RoundedRectangleBorder(
+                TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Cari kos...',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text('Kos-kosan Andalan'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD3BBA0),
-                    foregroundColor: Colors.white, // Change text color to white
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                SizedBox(height: 10),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => _sortKosList('Terendah'),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.brown,
+                          backgroundColor: Colors.white, // Text color
+                        ),
+                        child: const Text('Harga Terendah'),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () => _sortKosList('Tertinggi'),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.brown,
+                          backgroundColor: Colors.white, // Text color
+                        ),
+                        child: const Text('Harga Tertinggi'),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: _showFilterDialog,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.brown,
+                          backgroundColor: Colors.white, // Text color
+                        ),
+                        child: const Text('Filter Harga'),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text('Urutkan'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD3BBA0),
-                    foregroundColor: Colors.white, // Change text color to white
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+                SizedBox(height: 20),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: filteredKost.length,
+                  itemBuilder: (context, index) {
+                    final kos = filteredKost[index];
+                    return _buildKosCard(kos);
+                  },
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 20),
-          ...filteredKost.map((kos) => _buildKosCard(kos)).toList(),
         ],
       ),
     );
   }
 
   Widget _buildKosCard(Kos kos) {
-    return GestureDetector(
-      onTap: () {
-        _showKosDetailsDialog(context, kos);
-      },
-      child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 100,
-                color: Colors.grey[300],
-                child: kos.imagePath.isNotEmpty
-                    ? _buildKosImage(kos.imagePath)
-                    : const Center(child: Text('No Image')),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                kos.name,
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 5),
-              Row(
-                children: const [
-                  Icon(Icons.star, color: Colors.amber, size: 16),
-                  Icon(Icons.star, color: Colors.amber, size: 16),
-                  Icon(Icons.star, color: Colors.amber, size: 16),
-                  Icon(Icons.star, color: Colors.amber, size: 16),
-                  Icon(Icons.star, color: Colors.amber, size: 16),
-                ],
-              ),
-              const SizedBox(height: 5),
-              Text(
-                kos.description,
-                style: const TextStyle(color: Colors.grey),
-              ),
-              Text(
-                'Rp. ${kos.price.toStringAsFixed(0)}/Kamar/Bulan', // Menampilkan harga sesuai dengan data kos
-                style: TextStyle(color: Colors.brown),
-              ),
-            ],
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+        contentPadding: EdgeInsets.all(10),
+        leading: Image.file(
+          File(kos.imagePath),
+          width: 80,
+          height: 80,
+          fit: BoxFit.cover,
+        ),
+        title: Text(
+          kos.name,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
         ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 5),
+            Text(
+              kos.description,
+              style: TextStyle(fontSize: 14),
+            ),
+            SizedBox(height: 5),
+            Text(
+              'Rp ${kos.price}',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.brown,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        trailing: IconButton(
+          icon: Icon(
+            Icons.favorite_border,
+            color: Colors.brown,
+          ),
+          onPressed: () {
+            widget.onFavoriteAdded(kos);
+            _showFavoriteAddedDialog(context);
+          },
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => KosDetailScreen(kos: kos),
+            ),
+          );
+        },
       ),
     );
-  }
-
-  void _showKosDetailsDialog(BuildContext context, Kos kos) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Stack(
-                  alignment: Alignment.topRight,
-                  children: [
-                    Container(
-                      height: 150,
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10),
-                        ),
-                        color: Colors.grey[300],
-                      ),
-                      child: kos.imagePath.isNotEmpty
-                          ? _buildKosImage(kos.imagePath)
-                          : const Center(child: Text('No Image')),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.favorite_border),
-                      onPressed: () {
-                        // Implement favorite functionality here
-                        _showFavoriteAddedDialog(context);
-                      },
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        kos.name,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 5),
-                      Row(
-                        children: const [
-                          Icon(Icons.star, color: Colors.amber, size: 16),
-                          Icon(Icons.star, color: Colors.amber, size: 16),
-                          Icon(Icons.star, color: Colors.amber, size: 16),
-                          Icon(Icons.star, color: Colors.amber, size: 16),
-                          Icon(Icons.star, color: Colors.amber, size: 16),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        kos.description,
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                      Text(
-                        'Rp. ${kos.price.toStringAsFixed(0)}/Kamar/Bulan',
-                        style: TextStyle(color: Colors.brown),
-                      ),
-                      const SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Implement booking functionality here
-                          // Example: Navigator.pushNamed(context, '/booking');
-                        },
-                        child: const Text('Booking'),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildKosImage(String imagePath) {
-    File imageFile = File(imagePath);
-    bool fileExists = imageFile.existsSync();
-    if (fileExists) {
-      return Image.file(
-        imageFile,
-        fit: BoxFit.cover,
-        height: 100,
-        width: double.infinity,
-      );
-    } else {
-      return const Center(child: Text('Image not found'));
-    }
   }
 }

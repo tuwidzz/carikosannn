@@ -1,0 +1,149 @@
+// 1home.dart
+
+import 'package:carikosannn/screen/routes/about.dart';
+import 'package:carikosannn/screen/routes/user/cs.dart';
+import 'package:flutter/material.dart';
+import 'package:carikosannn/screen/routes/user/home_content.dart';
+import 'package:carikosannn/screen/routes/user/2fav.dart';
+import 'package:carikosannn/screen/routes/user/3chat.dart';
+import 'package:carikosannn/screen/routes/user/4profil.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
+
+  static final List<Widget> _widgetOptions = <Widget>[
+    HomeContent(),
+    FavScreen(
+      favoriteKosList: [],
+    ),
+    const ChatScreen(),
+    const ProfileScreen(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.brown[50],
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  'Selamat datang, User!',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'Cari Kos Dengan Mudah',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+            Image.asset(
+              'assets/images/logo.png',
+              height: 40,
+            ),
+          ],
+        ),
+        backgroundColor: Colors.brown[50],
+        automaticallyImplyLeading: false,
+      ),
+      drawer: _selectedIndex == 0
+          ? Drawer(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  const DrawerHeader(
+                    child: Text(
+                      'CariKos',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.brown,
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text(
+                      'Tentang Kami',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      // Navigate to AboutUs screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AboutUs(),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    title: const Text(
+                      'Customer Service',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      // Navigate to CustomerServiceScreen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CustomerServiceScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            )
+          : null,
+      body: _widgetOptions.elementAt(_selectedIndex),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Cari',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favorit',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Pesan',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profil',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.brown,
+        unselectedItemColor: Colors.grey,
+        onTap: _onItemTapped,
+      ),
+    );
+  }
+}

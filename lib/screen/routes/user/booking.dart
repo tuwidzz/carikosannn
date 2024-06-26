@@ -1,24 +1,24 @@
-// chekout.dart(user)
+// booking.dart(user)
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 
-class CheckoutScreen extends StatefulWidget {
+class BookingScreen extends StatefulWidget {
   final String imagePath;
   final String title;
   final double price;
 
-  const CheckoutScreen(
+  const BookingScreen(
       {super.key,
       required this.imagePath,
       required this.title,
       required this.price});
 
   @override
-  _CheckoutScreenState createState() => _CheckoutScreenState();
+  _BookingScreenState createState() => _BookingScreenState();
 }
 
-class _CheckoutScreenState extends State<CheckoutScreen> {
+class _BookingScreenState extends State<BookingScreen> {
   int _quantity = 1;
 
   @override

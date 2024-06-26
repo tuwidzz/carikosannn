@@ -32,7 +32,7 @@ class CariKosan extends StatelessWidget {
         routes: {
           '/login': (context) =>
               const LoginScreen(), // Menambahkan rute ke halaman login
-          '/home': (context) => const AuthWrapper(child: HomeScreen()),
+          '/home': (context) => AuthWrapper(child: HomeScreen()),
           '/admin': (context) =>
               const AdminScreen(), // Menambahkan rute ke halaman home
         },

@@ -1,89 +1,97 @@
-import 'package:flutter/material.dart';
-import 'package:carikosannn/dto/fav.dart';
+// fav.dart(user)
+// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors
 
-class FavScreen extends StatelessWidget {
-  const FavScreen({Key? key}) : super(key: key);
+import 'dart:io';
+import 'package:flutter/material.dart';
+import '../../../dto/kos.dart';
+import '../../../services/data_service.dart';
+
+class FavScreen extends StatefulWidget {
+  final List<Kos> favoriteKosList;
+
+  const FavScreen({Key? key, required this.favoriteKosList});
+
+  @override
+  _FavScreenState createState() => _FavScreenState();
+}
+
+class _FavScreenState extends State<FavScreen> {
+  List<Kos> favoriteKosList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    favoriteKosList = widget.favoriteKosList;
+  }
 
   @override
   Widget build(BuildContext context) {
-    final favorites = FavoritesManager().favorites;
-
     return Scaffold(
       backgroundColor: Colors.brown[50],
-      body: favorites.isEmpty
-          ? Center(
-              child: Text(
-                'Belum ada riwayat Favorit.',
-                style: TextStyle(fontSize: 18),
-              ),
-            )
-          : ListView.builder(
-              itemCount: favorites.length,
-              itemBuilder: (context, index) {
-                final kos = favorites[index];
-                return Card(
-                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 100,
-                          color: Colors.grey[300],
-                          child: kos.imagePath.isNotEmpty
-                              ? _buildKosImage(kos.imagePath)
-                              : Center(child: Text('No Image')),
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    kos.name,
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    kos.description,
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                  Text(
-                                    'Rp. 999.999/Kamar/Bulan',
-                                    style: TextStyle(color: Colors.brown),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.favorite),
-                              onPressed: () {
-                                FavoritesManager().removeFavorite(kos);
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
+      // appBar: AppBar(
+      //   title: Row(
+      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //     children: [
+      //       Column(
+      //         crossAxisAlignment: CrossAxisAlignment.start,
+      //         children: const [
+      //           Text(
+      //             'Kos Favorit',
+      //             style: TextStyle(
+      //               fontSize: 20,
+      //               fontWeight: FontWeight.bold,
+      //             ),
+      //           ),
+      //           Text(
+      //             'Kos yang kamu tandai sebagai favorit',
+      //             style: TextStyle(
+      //               fontSize: 16,
+      //               color: Colors.grey,
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //       Image.asset(
+      //         'assets/images/logo.png',
+      //         height: 40,
+      //       ),
+      //     ],
+      //   ),
+      //   backgroundColor: Colors.brown[50],
+      //   automaticallyImplyLeading: false,
+      // ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: favoriteKosList.isEmpty
+            ? Center(
+                child: Text(
+                  'Belum ada kos favorit.',
+                  style: TextStyle(fontSize: 18, color: Colors.grey),
+                ),
+              )
+            : ListView.builder(
+                itemCount: favoriteKosList.length,
+                itemBuilder: (context, index) {
+                  Kos kos = favoriteKosList[index];
+                  return Card(
+                    elevation: 3,
+                    child: ListTile(
+                      leading: Image.file(File(kos.imagePath)),
+                      title: Text(kos.name),
+                      subtitle: Text(kos.description),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          setState(() {
+                            favoriteKosList.remove(kos);
+                          });
+                        },
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-    );
-  }
-
-  Widget _buildKosImage(String imagePath) {
-    return Image.asset(
-      imagePath,
-      fit: BoxFit.cover,
+                  );
+                },
+              ),
+      ),
     );
   }
 }

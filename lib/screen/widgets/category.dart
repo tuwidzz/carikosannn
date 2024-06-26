@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:carikosannn/screen/routes/user/cekout.dart';
+import 'package:carikosannn/screen/routes/user/booking.dart';
 
 class Category extends StatelessWidget {
   final String name;
@@ -19,11 +19,11 @@ class Category extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigasi ke CheckoutScreen saat kategori dipilih
+        // Navigasi ke BookingScreen saat kategori dipilih
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CheckoutScreen(
+            builder: (context) => BookingScreen(
               title: name,
               imagePath: imagePath,
               price: price,

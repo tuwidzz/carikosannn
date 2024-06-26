@@ -10,7 +10,7 @@ class Kos {
   String facilities;
   String contact;
   String imagePath;
-  bool isFavorite;
+  // bool isFavorite;
 
   Kos({
     required this.id, // ID sebagai parameter wajib
@@ -22,7 +22,7 @@ class Kos {
     required this.facilities,
     required this.contact,
     required this.imagePath,
-    this.isFavorite = false,
+    // this.isFavorite = false,
   });
 
   @override
