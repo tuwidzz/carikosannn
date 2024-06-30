@@ -1,5 +1,8 @@
+// 1home.dart(user)
+// ignore_for_file: sort_child_properties_last, library_private_types_in_public_api, prefer_const_constructors, use_key_in_widget_constructors, unnecessary_to_list_in_spreads, use_super_parameters, file_names, non_constant_identifier_names, avoid_types_as_parameter_names
+
+import 'package:carikosannn/dto/manager.dart';
 import 'package:carikosannn/endpoints/endpoints.dart';
-import 'package:carikosannn/services/data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:carikosannn/dto/kos.dart';
 import 'package:carikosannn/screen/routes/user/3chat.dart';
@@ -7,10 +10,8 @@ import 'package:carikosannn/screen/routes/user/2fav.dart';
 import 'package:carikosannn/screen/routes/user/4profil.dart';
 import 'package:carikosannn/screen/widgets/detail_screen.dart';
 
-import '../../widgets/book_screen.dart';
-
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -26,17 +27,22 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  static late List<Widget> _widgetOptions;
+  static final List<Widget> _widgetOptions = <Widget>[
+    HomeContent(
+      onFavoriteAdded: (Kos) {},
+    ),
+    FavScreen(
+      favoriteKosList: const [],
+    ),
+    const ChatScreen(),
+    const ProfileScreen(),
+  ];
 
   @override
   void initState() {
     super.initState();
-    _widgetOptions = <Widget>[
-      HomeContent(onFavoriteAdded: _addKosToFavorites),
-      FavScreen(favoriteKosList: favoriteKosList),
-      const BookScreen(),
-      const ProfileScreen(),
-    ];
+    _widgetOptions[0] = HomeContent(onFavoriteAdded: _addKosToFavorites);
+    _widgetOptions[1] = FavScreen(favoriteKosList: favoriteKosList);
   }
 
   void _onItemTapped(int index) {
@@ -56,9 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Column(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: const [
                 Text(
                   'Selamat datang, User!',
                   style: TextStyle(
@@ -96,8 +102,8 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Favorit',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.book_online),
-            label: 'Book',
+            icon: Icon(Icons.chat),
+            label: 'Pesan',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -116,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
 class HomeContent extends StatefulWidget {
   final Function(Kos) onFavoriteAdded;
 
-  const HomeContent({super.key, required this.onFavoriteAdded});
+  const HomeContent({required this.onFavoriteAdded});
 
   @override
   _HomeContentState createState() => _HomeContentState();
@@ -125,7 +131,6 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> {
   late List<Kos> filteredKost;
   TextEditingController searchController = TextEditingController();
-  bool _isLoading = true;
 
   // Filter criteria
   double _selectedPrice = 0;
@@ -134,26 +139,14 @@ class _HomeContentState extends State<HomeContent> {
   @override
   void initState() {
     super.initState();
-    _fetchKosData();
+    filteredKost = KosManager1().kosList;
     searchController.addListener(_filterKosList);
-  }
-
-  Future<void> _fetchKosData() async {
-    try {
-      final kosList = await KosService.fetchKosList();
-      setState(() {
-        filteredKost = kosList;
-        _isLoading = false;
-      });
-    } catch (e) {
-      print(e);
-    }
   }
 
   void _filterKosList() {
     setState(() {
       String query = searchController.text.toLowerCase();
-      filteredKost = filteredKost.where((kos) {
+      filteredKost = KosManager1().kosList.where((kos) {
         return kos.name.toLowerCase().contains(query) ||
             kos.description.toLowerCase().contains(query);
       }).toList();
@@ -177,7 +170,7 @@ class _HomeContentState extends State<HomeContent> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Filter Kos'),
+          title: Text('Filter Kos'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -208,7 +201,7 @@ class _HomeContentState extends State<HomeContent> {
                 Navigator.pop(context);
                 _filterKosList();
               },
-              child: const Text('Apply'),
+              child: Text('Apply'),
             ),
           ],
         );
@@ -231,14 +224,14 @@ class _HomeContentState extends State<HomeContent> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Favorit Ditambahkan'),
-          content: const Text('Kos telah ditambahkan ke daftar favorit.'),
+          title: Text('Favorit Ditambahkan'),
+          content: Text('Kos telah ditambahkan ke daftar favorit.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('OK'),
+              child: Text('OK'),
             ),
           ],
         );
@@ -248,86 +241,84 @@ class _HomeContentState extends State<HomeContent> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                TextField(
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Cari kos...',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
                     children: [
-                      TextField(
-                        controller: searchController,
-                        decoration: InputDecoration(
-                          hintText: 'Cari kos...',
-                          prefixIcon: const Icon(Icons.search),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                      ElevatedButton(
+                        onPressed: () => _sortKosList('Terendah'),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.brown,
+                          backgroundColor: Colors.white, // Text color
                         ),
+                        child: const Text('Harga Terendah'),
                       ),
-                      const SizedBox(height: 10),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () => _sortKosList('Terendah'),
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.brown,
-                                backgroundColor: Colors.white,
-                              ),
-                              child: const Text('Harga Terendah'),
-                            ),
-                            const SizedBox(width: 10),
-                            ElevatedButton(
-                              onPressed: () => _sortKosList('Tertinggi'),
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.brown,
-                                backgroundColor: Colors.white,
-                              ),
-                              child: const Text('Harga Tertinggi'),
-                            ),
-                            const SizedBox(width: 10),
-                            ElevatedButton(
-                              onPressed: _showFilterDialog,
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.brown,
-                                backgroundColor: Colors.white,
-                              ),
-                              child: const Text('Filter'),
-                            ),
-                          ],
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () => _sortKosList('Tertinggi'),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.brown,
+                          backgroundColor: Colors.white, // Text color
                         ),
+                        child: const Text('Harga Tertinggi'),
                       ),
-                      const SizedBox(height: 10),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: filteredKost.length,
-                        itemBuilder: (context, index) {
-                          final kos = filteredKost[index];
-                          return _buildKosCard(kos);
-                        },
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: _showFilterDialog,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.brown,
+                          backgroundColor: Colors.white, // Text color
+                        ),
+                        child: const Text('Filter Harga'),
                       ),
                     ],
                   ),
                 ),
+                SizedBox(height: 20),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: filteredKost.length,
+                  itemBuilder: (context, index) {
+                    final kos = filteredKost[index];
+                    return _buildKosCard(kos);
+                  },
+                ),
               ],
             ),
-          );
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildKosCard(Kos kos) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: EdgeInsets.symmetric(vertical: 8),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.all(10),
+        contentPadding: EdgeInsets.all(10),
         leading: Image.network(
           '${Endpoints.baseUAS}/static/show_image/${kos.imagePath}',
           width: 80,
@@ -336,7 +327,7 @@ class _HomeContentState extends State<HomeContent> {
         ),
         title: Text(
           kos.name,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
@@ -344,15 +335,15 @@ class _HomeContentState extends State<HomeContent> {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             Text(
               kos.description,
-              style: const TextStyle(fontSize: 14),
+              style: TextStyle(fontSize: 14),
             ),
-            const SizedBox(height: 5),
+            SizedBox(height: 5),
             Text(
               'Rp ${kos.price}',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 color: Colors.brown,
                 fontWeight: FontWeight.bold,
@@ -361,7 +352,7 @@ class _HomeContentState extends State<HomeContent> {
           ],
         ),
         trailing: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.favorite_border,
             color: Colors.brown,
           ),

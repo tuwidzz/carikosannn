@@ -1,10 +1,8 @@
-// fav.dart(user)
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors
-
 import 'dart:io';
+import 'package:carikosannn/endpoints/endpoints.dart';
+import 'package:carikosannn/screen/widgets/detail_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../dto/kos.dart';
-import '../../../services/data_service.dart';
 
 class FavScreen extends StatefulWidget {
   final List<Kos> favoriteKosList;
@@ -73,19 +71,34 @@ class _FavScreenState extends State<FavScreen> {
                 itemCount: favoriteKosList.length,
                 itemBuilder: (context, index) {
                   Kos kos = favoriteKosList[index];
-                  return Card(
-                    elevation: 3,
-                    child: ListTile(
-                      leading: Image.file(File(kos.imagePath)),
-                      title: Text(kos.name),
-                      subtitle: Text(kos.description),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () {
-                          setState(() {
-                            favoriteKosList.remove(kos);
-                          });
-                        },
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => KosDetailScreen(kos: kos),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      elevation: 3,
+                      child: ListTile(
+                        leading: Image.network(
+                          '${Endpoints.baseUAS}/static/show_image/${kos.imagePath}',
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.cover,
+                        ),
+                        title: Text(kos.name),
+                        subtitle: Text(kos.description),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            setState(() {
+                              favoriteKosList.remove(kos);
+                            });
+                          },
+                        ),
                       ),
                     ),
                   );

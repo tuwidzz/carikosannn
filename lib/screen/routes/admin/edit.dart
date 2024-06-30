@@ -1,16 +1,17 @@
-// edit.dart(admin)
+//edit.dart
 
 import 'dart:io';
-import 'package:carikosannn/dto/kos.dart';
-import 'package:carikosannn/dto/kos_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:carikosannn/dto/kos.dart';
+import 'package:carikosannn/services/data_service.dart';
+import 'package:carikosannn/endpoints/endpoints.dart';
 
 class EditKosScreen extends StatefulWidget {
   final Kos kos;
 
-  const EditKosScreen({super.key, required this.kos});
+  const EditKosScreen({Key? key, required this.kos}) : super(key: key);
 
   @override
   _EditKosScreenState createState() => _EditKosScreenState();
@@ -18,6 +19,7 @@ class EditKosScreen extends StatefulWidget {
 
 class _EditKosScreenState extends State<EditKosScreen> {
   final _formKey = GlobalKey<FormState>();
+  late TextEditingController _idController;
   late TextEditingController _nameController;
   late TextEditingController _addressController;
   late TextEditingController _cityController;
@@ -30,6 +32,7 @@ class _EditKosScreenState extends State<EditKosScreen> {
   @override
   void initState() {
     super.initState();
+    _idController = TextEditingController(text: widget.kos.id.toString());
     _nameController = TextEditingController(text: widget.kos.name);
     _addressController = TextEditingController(text: widget.kos.address);
     _cityController = TextEditingController(text: widget.kos.city);
@@ -42,6 +45,7 @@ class _EditKosScreenState extends State<EditKosScreen> {
 
   @override
   void dispose() {
+    _idController.dispose();
     _nameController.dispose();
     _addressController.dispose();
     _cityController.dispose();
@@ -53,11 +57,18 @@ class _EditKosScreenState extends State<EditKosScreen> {
   }
 
   Future<void> _pickImage(ImageSource source) async {
-    final pickedFile = await ImagePicker().pickImage(source: source);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
+    try {
+      final pickedFile = await ImagePicker().pickImage(source: source);
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      print('Error picking image: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to pick an image')),
+      );
     }
   }
 
@@ -69,7 +80,7 @@ class _EditKosScreenState extends State<EditKosScreen> {
     return imagePath;
   }
 
-  void _saveChanges() async {
+  void _saveChanges(int id) async {
     if (_formKey.currentState!.validate()) {
       String imagePath = widget.kos.imagePath;
       if (_imageFile != null) {
@@ -77,7 +88,7 @@ class _EditKosScreenState extends State<EditKosScreen> {
       }
 
       final updatedKos = Kos(
-        id: widget.kos.id, // Pastikan ID tetap sama
+        id: int.parse(_idController.text), // Ensure ID is parsed correctly
         name: _nameController.text,
         address: _addressController.text,
         city: _cityController.text,
@@ -88,24 +99,19 @@ class _EditKosScreenState extends State<EditKosScreen> {
         imagePath: imagePath,
       );
 
-      KosManager().updateKos(updatedKos);
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Kos berhasil diperbarui!'),
-        ),
-      );
+      try {
+        await KosManager().updateKos(updatedKos);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Kos successfully updated!')),
+        );
+        Navigator.pop(context, updatedKos); // Send updatedKos back
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to update Kos!')),
+        );
+        print('Error updating Kos: $e');
+      }
     }
-  }
-
-  void _deleteKos() {
-    KosManager().removeKos(widget.kos);
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Kos berhasil dihapus!'),
-      ),
-    );
   }
 
   @override
@@ -129,15 +135,15 @@ class _EditKosScreenState extends State<EditKosScreen> {
                 child: _imageFile != null
                     ? Image.file(
                         _imageFile!,
-                        height: 200,
-                        width: double.infinity,
+                        width: 80,
+                        height: 80,
                         fit: BoxFit.cover,
                       )
                     : widget.kos.imagePath.isNotEmpty
-                        ? Image.file(
-                            File(widget.kos.imagePath),
-                            height: 200,
-                            width: double.infinity,
+                        ? Image.network(
+                            '${Endpoints.baseUAS}/static/show_image/${widget.kos.imagePath}',
+                            width: 80,
+                            height: 80,
                             fit: BoxFit.cover,
                           )
                         : Container(
@@ -162,6 +168,16 @@ class _EditKosScreenState extends State<EditKosScreen> {
                     },
                   ),
                 ],
+              ),
+              TextFormField(
+                controller: _idController,
+                decoration: const InputDecoration(labelText: 'ID'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the ID';
+                  }
+                  return null;
+                },
               ),
               TextFormField(
                 controller: _nameController,
@@ -236,22 +252,14 @@ class _EditKosScreenState extends State<EditKosScreen> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _saveChanges,
+                onPressed: () {
+                  _saveChanges(widget.kos.id);
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.brown,
                 ),
                 child: const Text(
                   'Save Changes',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: _deleteKos,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                ),
-                child: const Text(
-                  'Delete Kos',
                   style: TextStyle(color: Colors.white),
                 ),
               ),

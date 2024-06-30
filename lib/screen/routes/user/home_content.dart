@@ -1,10 +1,14 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:io';
 import 'package:carikosannn/dto/kos.dart';
-import 'package:carikosannn/dto/kos_manager.dart';
+import 'package:carikosannn/dto/manager.dart';
 import 'package:flutter/material.dart';
 import '2fav.dart';
 
 class HomeContent extends StatefulWidget {
+  const HomeContent({super.key});
+
   @override
   _HomeContentState createState() => _HomeContentState();
 }
@@ -21,14 +25,14 @@ class _HomeContentState extends State<HomeContent> {
   @override
   void initState() {
     super.initState();
-    filteredKost = KosManager().kosList;
+    filteredKost = KosManager1().kosList;
     searchController.addListener(_filterKosList);
   }
 
   void _filterKosList() {
     setState(() {
       String query = searchController.text.toLowerCase();
-      filteredKost = KosManager().kosList.where((kos) {
+      filteredKost = KosManager1().kosList.where((kos) {
         return kos.name.toLowerCase().contains(query) ||
             kos.description.toLowerCase().contains(query);
       }).toList();
@@ -52,7 +56,7 @@ class _HomeContentState extends State<HomeContent> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Filter Kos'),
+          title: const Text('Filter Kos'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -83,7 +87,7 @@ class _HomeContentState extends State<HomeContent> {
                 Navigator.pop(context);
                 _filterKosList();
               },
-              child: Text('Apply'),
+              child: const Text('Apply'),
             ),
           ],
         );
@@ -96,13 +100,13 @@ class _HomeContentState extends State<HomeContent> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text('Berhasil ditambahkan ke favorit!'),
+          content: const Text('Berhasil ditambahkan ke favorit!'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
@@ -159,7 +163,6 @@ class _HomeContentState extends State<HomeContent> {
                 const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {},
-                  child: const Text('Kos-kosan Andalan'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFD3BBA0),
                     foregroundColor: Colors.white,
@@ -167,11 +170,11 @@ class _HomeContentState extends State<HomeContent> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  child: const Text('Kos-kosan Andalan'),
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {},
-                  child: const Text('Urutkan'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFD3BBA0),
                     foregroundColor: Colors.white,
@@ -179,6 +182,7 @@ class _HomeContentState extends State<HomeContent> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  child: const Text('Urutkan'),
                 ),
                 const SizedBox(width: 10),
                 ElevatedButton(
@@ -191,7 +195,6 @@ class _HomeContentState extends State<HomeContent> {
                       ),
                     );
                   },
-                  child: const Text('Lihat Favorit'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFD3BBA0),
                     foregroundColor: Colors.white,
@@ -199,12 +202,13 @@ class _HomeContentState extends State<HomeContent> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
+                  child: const Text('Lihat Favorit'),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 20),
-          ...filteredKost.map((kos) => _buildKosCard(kos)).toList(),
+          ...filteredKost.map((kos) => _buildKosCard(kos)),
         ],
       ),
     );
@@ -237,8 +241,8 @@ class _HomeContentState extends State<HomeContent> {
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 5),
-              Row(
-                children: const [
+              const Row(
+                children: [
                   Icon(Icons.star, color: Colors.amber, size: 16),
                   Icon(Icons.star, color: Colors.amber, size: 16),
                   Icon(Icons.star, color: Colors.amber, size: 16),
@@ -253,12 +257,12 @@ class _HomeContentState extends State<HomeContent> {
               ),
               Text(
                 'Rp. ${kos.price.toStringAsFixed(0)}/Kamar/Bulan',
-                style: TextStyle(color: Colors.brown),
+                style: const TextStyle(color: Colors.brown),
               ),
               IconButton(
                 icon: favoriteKosList.contains(kos)
-                    ? Icon(Icons.favorite, color: Colors.red)
-                    : Icon(Icons.favorite_border),
+                    ? const Icon(Icons.favorite, color: Colors.red)
+                    : const Icon(Icons.favorite_border),
                 onPressed: () {
                   _addToFavorites(kos);
                 },
@@ -317,8 +321,8 @@ class _HomeContentState extends State<HomeContent> {
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 10),
-                      Row(
-                        children: const [
+                      const Row(
+                        children: [
                           Icon(Icons.star, color: Colors.amber, size: 16),
                           Icon(Icons.star, color: Colors.amber, size: 16),
                           Icon(Icons.star, color: Colors.amber, size: 16),
@@ -333,7 +337,7 @@ class _HomeContentState extends State<HomeContent> {
                       ),
                       Text(
                         'Rp. ${kos.price.toStringAsFixed(0)}/Kamar/Bulan',
-                        style: TextStyle(color: Colors.brown),
+                        style: const TextStyle(color: Colors.brown),
                       ),
                       const SizedBox(height: 10),
                       ElevatedButton(
@@ -344,8 +348,8 @@ class _HomeContentState extends State<HomeContent> {
                       ),
                       IconButton(
                         icon: favoriteKosList.contains(kos)
-                            ? Icon(Icons.favorite, color: Colors.red)
-                            : Icon(Icons.favorite_border),
+                            ? const Icon(Icons.favorite, color: Colors.red)
+                            : const Icon(Icons.favorite_border),
                         onPressed: () {
                           _addToFavorites(kos);
                         },

@@ -56,9 +56,9 @@ class KosService {
 
 class KosManager {
   Future<void> updateKos(Kos kos, {File? imageFile}) async {
-    final url = Uri.parse('${Endpoints.dataKosEdit}/${kos.id}');
+    var request = http.MultipartRequest(
+        'PUT', Uri.parse('${Endpoints.dataKosEdit}/${kos.id}'));
 
-    var request = http.MultipartRequest('PUT', url);
     request.fields['id_user'] = kos.id.toString();
     request.fields['nama_kos'] = kos.name;
     request.fields['alamat'] = kos.address;

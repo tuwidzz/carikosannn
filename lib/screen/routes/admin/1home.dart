@@ -1,17 +1,16 @@
-// 1.home.dart(admin)
-// ignore_for_file: prefer_const_constructors, library_private_types_in_public_api
-
-import 'dart:io';
-
-import 'package:carikosannn/dto/kos_manager.dart';
-import 'package:carikosannn/screen/routes/admin/add.dart';
-import 'package:carikosannn/screen/routes/admin/2history.dart';
-import 'package:carikosannn/screen/routes/admin/edit.dart';
-import 'package:carikosannn/screen/routes/admin/3profil.dart';
 import 'package:flutter/material.dart';
+import 'package:carikosannn/dto/kos.dart';
+import 'package:carikosannn/endpoints/endpoints.dart';
+import 'package:carikosannn/screen/routes/admin/add.dart';
+import 'package:carikosannn/screen/routes/admin/edit.dart';
+// import 'package:carikosannn/screen/routes/admin/2history.dart';
+import 'package:carikosannn/screen/routes/admin/3profil.dart';
+import 'package:carikosannn/services/data_service.dart';
+
+import '../../widgets/admin_book.dart';
 
 class AdminScreen extends StatefulWidget {
-  const AdminScreen({super.key});
+  const AdminScreen({Key? key}) : super(key: key);
 
   @override
   _AdminScreenState createState() => _AdminScreenState();
@@ -19,6 +18,19 @@ class AdminScreen extends StatefulWidget {
 
 class _AdminScreenState extends State<AdminScreen> {
   int _selectedIndex = 0;
+  late Future<List<Kos>> _kosFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshKosList();
+  }
+
+  void _refreshKosList() {
+    setState(() {
+      _kosFuture = KosService.fetchKosList();
+    });
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -27,20 +39,11 @@ class _AdminScreenState extends State<AdminScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    // KosManager().kosStream.listen((List<Kos> kosList) {
-    //   setState(() {}); // Trigger a rebuild when kosList updates
-    // });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Admin Screen'),
-        backgroundColor:
-            Colors.brown[50], // Same as AdminProfileScreen background color
+        backgroundColor: Colors.brown[50],
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20.0),
@@ -52,7 +55,7 @@ class _AdminScreenState extends State<AdminScreen> {
           ),
         ],
       ),
-      backgroundColor: Colors.brown[50], // Background color of the screen
+      backgroundColor: Colors.brown[50],
       body: _buildBody(),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -62,7 +65,7 @@ class _AdminScreenState extends State<AdminScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.history),
-            label: 'History',
+            label: 'Booked',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
@@ -81,40 +84,69 @@ class _AdminScreenState extends State<AdminScreen> {
                   MaterialPageRoute(
                     builder: (context) => const AddKos(),
                   ),
-                );
+                ).then((_) {
+                  _refreshKosList();
+                });
               },
               backgroundColor: Colors.brown,
-              child: Icon(Icons.add, color: Colors.white),
+              child: const Icon(Icons.add, color: Colors.white),
             )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
+  void _deleteKos(int kosId) async {
+    final success = await DataService.deleteKos(kosId);
+    if (success) {
+      setState(() {
+        _kosFuture = KosService.fetchKosList();
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to delete Kos')),
+      );
+    }
+  }
+
   Widget _buildBody() {
     switch (_selectedIndex) {
       case 0:
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 20),
-              _buildKosList(),
-            ],
-          ),
+        return FutureBuilder<List<Kos>>(
+          future: _kosFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error fetching data: ${snapshot.error}'),
+              );
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No data available'));
+            } else {
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 20),
+                    _buildKosList(snapshot.data!),
+                  ],
+                ),
+              );
+            }
+          },
         );
       case 1:
-        return const HistoryScreen(); // Adjust to your history screen
+        return const BookScreenAdmin(); // Placeholder for your HistoryScreen
       case 2:
-        return const AdminProfile();
+        return const AdminProfile(); // Placeholder for your AdminProfile
       default:
         return Container();
     }
   }
 
-  Widget _buildKosList() {
-    final kosList = KosManager().kosList;
+  Widget _buildKosList(List<Kos> kosList) {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -128,7 +160,13 @@ class _AdminScreenState extends State<AdminScreen> {
               MaterialPageRoute(
                 builder: (context) => EditKosScreen(kos: kos),
               ),
-            );
+            ).then((updatedKos) {
+              if (updatedKos != null) {
+                setState(() {
+                  kosList[index] = updatedKos;
+                });
+              }
+            });
           },
           child: Card(
             margin: const EdgeInsets.symmetric(vertical: 10),
@@ -147,8 +185,10 @@ class _AdminScreenState extends State<AdminScreen> {
                           height: 100,
                           color: Colors.grey[300],
                           child: kos.imagePath.isNotEmpty
-                              ? Image.file(
-                                  File(kos.imagePath),
+                              ? Image.network(
+                                  '${Endpoints.baseUAS}/static/show_image/${kos.imagePath}',
+                                  width: 80,
+                                  height: 80,
                                   fit: BoxFit.cover,
                                 )
                               : null,
@@ -160,7 +200,9 @@ class _AdminScreenState extends State<AdminScreen> {
                   Text(
                     kos.name,
                     style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 5),
                   Text(
@@ -169,20 +211,26 @@ class _AdminScreenState extends State<AdminScreen> {
                   ),
                   Text(
                     'Rp. ${kos.price.toStringAsFixed(0)}/Kamar/Bulan',
-                    style: TextStyle(color: Colors.brown),
+                    style: const TextStyle(color: Colors.brown),
                   ),
                   const SizedBox(height: 5),
                   Text(
                     'Alamat: ${kos.address}, ${kos.city}',
-                    style: TextStyle(color: Colors.grey),
+                    style: const TextStyle(color: Colors.grey),
                   ),
                   Text(
                     'Fasilitas: ${kos.facilities}',
-                    style: TextStyle(color: Colors.grey),
+                    style: const TextStyle(color: Colors.grey),
                   ),
                   Text(
                     'Kontak: ${kos.contact}',
-                    style: TextStyle(color: Colors.grey),
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      _deleteKos(kos.id);
+                    },
                   ),
                 ],
               ),
@@ -195,7 +243,6 @@ class _AdminScreenState extends State<AdminScreen> {
 
   @override
   void dispose() {
-    // kosBloc.dispose();
     super.dispose();
   }
 }

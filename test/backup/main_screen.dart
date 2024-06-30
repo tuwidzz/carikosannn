@@ -3,7 +3,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'user/1home.dart';
+import '../../lib/screen/routes/user/1home.dart';
 //import 'profil_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [
-    HomeScreen(),
+    const HomeScreen(),
     // const HomeScreen(),
     // ProfilScreen(),
   ];
@@ -46,10 +46,6 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.history),
             label: 'Favorit',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'Pesan',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

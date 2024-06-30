@@ -1,19 +1,18 @@
-// kos.dart
+// lib/dto/kos.dart
 
 class Kos {
-  final String id; // Tambahkan ID unik
-  String name;
-  String address;
-  String city;
-  double price;
-  String description;
-  String facilities;
-  String contact;
-  String imagePath;
-  // bool isFavorite;
+  final int id; // Changed from String to int
+  final String name;
+  final String address;
+  final String city;
+  final double price;
+  final String description;
+  final String facilities;
+  final String contact;
+  final String imagePath;
 
   Kos({
-    required this.id, // ID sebagai parameter wajib
+    required this.id,
     required this.name,
     required this.address,
     required this.city,
@@ -22,16 +21,19 @@ class Kos {
     required this.facilities,
     required this.contact,
     required this.imagePath,
-    // this.isFavorite = false,
   });
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is Kos && other.id == id;
+  factory Kos.fromJson(Map<String, dynamic> json) {
+    return Kos(
+      id: json['id_kos'], // Assuming 'id_user' is an int in the JSON
+      name: json['nama_kos'],
+      address: json['alamat'],
+      city: json['kota'],
+      price: json['harga'],
+      description: json['deskripsi'],
+      facilities: json['fasilitas'],
+      contact: json['kontak'],
+      imagePath: json['gambar_kos'],
+    );
   }
-
-  @override
-  int get hashCode => id.hashCode;
 }

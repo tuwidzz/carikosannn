@@ -1,8 +1,8 @@
-// 3profil.dart(admin)
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, file_names
 
 import 'package:flutter/material.dart';
 import '../../../main.dart';
+import '../../widgets/admin_book.dart';
 
 class AdminProfile extends StatelessWidget {
   const AdminProfile({super.key});
@@ -68,8 +68,13 @@ class AdminProfile extends StatelessWidget {
               );
             }),
             const Divider(height: 0),
-            buildListTile(Icons.history, 'Riwayat', () {
+            buildListTile(Icons.history, 'Booked', () {
               // Navigation to purchase history page
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const BookScreenAdmin(),
+                ),
+              );
             }),
             const Divider(height: 0),
             buildListTile(Icons.exit_to_app, 'Log Out', () {
@@ -111,24 +116,24 @@ class EditProfileScreen extends StatelessWidget {
         title: const Text('Edit Profile'),
       ),
       body: const Center(
-        child: Text('Edit Profile Screen'),
+        child: Text('Masih dalam pengembangan!'),
       ),
     );
   }
 }
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+// class LoginScreen extends StatelessWidget {
+//   const LoginScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-      ),
-      body: const Center(
-        child: Text('Login Screen'),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Login'),
+//       ),
+//       body: const Center(
+//         child: Text('Login Screen'),
+//       ),
+//     );
+//   }
+// }

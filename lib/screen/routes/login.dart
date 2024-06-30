@@ -70,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   Image.asset(
                     'assets/images/logo.png', // Adjust the path to your logo
-                    height: 100,
+                    height: 250,
                   ),
                   const SizedBox(height: 20.0),
                   const Text(
@@ -144,20 +144,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 10.0),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'Lupa Password?',
-                      style: TextStyle(color: Colors.brown),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Text(
-                      'Tidak mempunyai akun? Daftar',
-                      style: TextStyle(color: Colors.brown),
-                    ),
-                  ),
+                  // TextButton(
+                  //   onPressed: () {},
+                  //   child: const Text(
+                  //     'Lupa Password?',
+                  //     style: TextStyle(color: Colors.brown),
+                  //   ),
+                  // ),
+                  // TextButton(
+                  //   onPressed: () {},
+                  //   child: const Text(
+                  //     'Tidak mempunyai akun? Daftar',
+                  //     style: TextStyle(color: Colors.brown),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

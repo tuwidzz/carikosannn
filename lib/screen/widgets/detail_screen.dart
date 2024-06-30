@@ -1,6 +1,4 @@
-//detail_screen.dart
-
-import 'dart:io';
+import 'package:carikosannn/endpoints/endpoints.dart';
 import 'package:flutter/material.dart';
 import 'package:carikosannn/dto/kos.dart';
 import 'package:carikosannn/dto/book_manager.dart'; // Import the manager
@@ -8,7 +6,7 @@ import 'package:carikosannn/dto/book_manager.dart'; // Import the manager
 class KosDetailScreen extends StatelessWidget {
   final Kos kos;
 
-  const KosDetailScreen({Key? key, required this.kos}) : super(key: key);
+  const KosDetailScreen({super.key, required this.kos});
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +21,18 @@ class KosDetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.file(
-                File(kos.imagePath),
-                width: double.infinity,
-                height: 200,
+              Image.network(
+                '${Endpoints.baseUAS}/static/show_image/${kos.imagePath}',
+                width: 400,
+                height: 400,
                 fit: BoxFit.cover,
               ),
               const SizedBox(height: 16),
+              Text(
+                'Nama: ${kos.id}',
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 8),
               Text(
                 'Nama: ${kos.name}',
                 style: const TextStyle(fontSize: 16),
@@ -77,11 +80,11 @@ class KosDetailScreen extends StatelessWidget {
                       const SnackBar(content: Text('Booking berhasil!')),
                     );
                   },
-                  child: const Text('Booking Sekarang'),
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.brown,
-                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.brown,
                   ),
+                  child: const Text('Booking Sekarang'),
                 ),
               ),
             ],

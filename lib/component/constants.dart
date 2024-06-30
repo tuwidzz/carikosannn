@@ -11,3 +11,5 @@ final formatter = NumberFormat.currency(locale: 'en_US', symbol: '\$');
 final DateFormat formatDate = DateFormat('yyyy-MM-dd H:mm');
 
 const tokenStoreName = "access_token";
+
+const baseURL = "base_url";

@@ -1,18 +1,16 @@
-// booking.dart(user)
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 
 class BookingScreen extends StatefulWidget {
   final String imagePath;
   final String title;
-  final double price;
+  final double harga;
 
-  const BookingScreen(
-      {super.key,
-      required this.imagePath,
-      required this.title,
-      required this.price});
+  const BookingScreen({
+    super.key,
+    required this.imagePath,
+    required this.title,
+    required this.harga,
+  });
 
   @override
   _BookingScreenState createState() => _BookingScreenState();
@@ -23,7 +21,7 @@ class _BookingScreenState extends State<BookingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double total = _quantity * widget.price;
+    double total = _quantity * widget.harga;
 
     return Scaffold(
       appBar: AppBar(
@@ -36,7 +34,7 @@ class _BookingScreenState extends State<BookingScreen> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
+              child: Image.network(
                 widget.imagePath,
                 fit: BoxFit.cover,
                 height: 200,
@@ -52,7 +50,7 @@ class _BookingScreenState extends State<BookingScreen> {
             ),
             const SizedBox(height: 10),
             Text(
-              'Price: \$${widget.price.toStringAsFixed(2)}',
+              'Harga: \$${widget.harga.toStringAsFixed(2)}',
               style: const TextStyle(
                 fontSize: 16,
                 color: Colors.grey,

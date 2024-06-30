@@ -4,14 +4,14 @@ import 'package:carikosannn/screen/routes/user/booking.dart';
 class Category extends StatelessWidget {
   final String name;
   final String description;
-  final double price;
+  final double harga;
   final String imagePath;
 
   const Category({
     super.key,
     required this.name,
     required this.description,
-    required this.price,
+    required this.harga,
     required this.imagePath,
   });
 
@@ -26,7 +26,7 @@ class Category extends StatelessWidget {
             builder: (context) => BookingScreen(
               title: name,
               imagePath: imagePath,
-              price: price,
+              harga: harga,
             ),
           ),
         );
@@ -72,7 +72,7 @@ class Category extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '\$$price',
+                    '\$$harga',
                     style: const TextStyle(
                       fontSize: 14,
                       color: Color.fromARGB(255, 5, 5, 5),
