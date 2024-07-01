@@ -11,7 +11,7 @@ import 'package:carikosannn/endpoints/endpoints.dart';
 class EditKosScreen extends StatefulWidget {
   final Kos kos;
 
-  const EditKosScreen({Key? key, required this.kos}) : super(key: key);
+  const EditKosScreen({super.key, required this.kos});
 
   @override
   _EditKosScreenState createState() => _EditKosScreenState();
@@ -74,8 +74,8 @@ class _EditKosScreenState extends State<EditKosScreen> {
 
   Future<String> _saveImage(File image) async {
     final directory = await getApplicationDocumentsDirectory();
-    final imagePath =
-        '${directory.path}/kos_image_${DateTime.now().millisecondsSinceEpoch}.png';
+    final imagePath = '${directory.path}.png';
+    // /kos_image_${DateTime.now().millisecondsSinceEpoch}.png';
     final File newImage = await image.copy(imagePath);
     return imagePath;
   }

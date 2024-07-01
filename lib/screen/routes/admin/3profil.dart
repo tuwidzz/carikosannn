@@ -58,15 +58,14 @@ class AdminProfile extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            buildListTile(Icons.person_outline, 'Edit Profil', () {
-              // Navigate to edit profile screen
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const EditProfileScreen(),
-                ),
-              );
-            }),
+            // buildListTile(Icons.person_outline, 'Edit Profil', () {
+            //   // Navigate to edit profile screen
+            //   Navigator.of(context).push(
+            //     MaterialPageRoute(
+            //       builder: (context) => const EditProfileScreen(),
+            //     ),
+            //   );
+            // }),
             const Divider(height: 0),
             buildListTile(Icons.history, 'Booked', () {
               // Navigation to purchase history page

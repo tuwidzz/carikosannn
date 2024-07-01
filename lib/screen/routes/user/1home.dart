@@ -2,7 +2,6 @@ import 'package:carikosannn/endpoints/endpoints.dart';
 import 'package:carikosannn/services/data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:carikosannn/dto/kos.dart';
-import 'package:carikosannn/screen/routes/user/3chat.dart';
 import 'package:carikosannn/screen/routes/user/2fav.dart';
 import 'package:carikosannn/screen/routes/user/4profil.dart';
 import 'package:carikosannn/screen/widgets/detail_screen.dart';

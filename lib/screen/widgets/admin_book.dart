@@ -34,14 +34,14 @@ class BookScreenAdmin extends StatelessWidget {
           height: 30, // Tinggi dari marquee
           child: Marquee(
             text: 'Booked Kos',
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 20.0,
             ),
             blankSpace: 100, // Spasi di antara teks berjalan
             velocity: 50, // Kecepatan animasi berjalan
-            pauseAfterRound: Duration(seconds: 1), // Jeda setelah satu putaran
+            pauseAfterRound: const Duration(seconds: 1), // Jeda setelah satu putaran
             startPadding: 10, // Padding di awal teks
           ),
         ),

@@ -3,7 +3,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:carikosannn/main.dart';
-
 import '../../widgets/book_screen.dart'; // Import BookScreen
 
 class ProfileScreen extends StatelessWidget {
@@ -60,10 +59,9 @@ class ProfileScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            buildListTile(Icons.person_outline, 'Edit Profil', () {
-              // Navigasi ke halaman edit profil
-            }),
+            // buildListTile(Icons.person_outline, 'Edit Profil', () {
+            //   // Navigasi ke halaman edit profil
+            // }),
             const Divider(height: 0),
             buildListTile(Icons.history, 'Booking', () {
               // Navigasi ke halaman riwayat pembelian

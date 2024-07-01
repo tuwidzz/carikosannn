@@ -4,7 +4,7 @@ class Endpoints {
   // static const String host = "10.0.2.2";
   // static const String hostPublic = "";
 
-  static const String baseUAS = "https://9523-180-249-184-80.ngrok-free.app";
+  static const String baseUAS = "https://6339-103-76-173-196.ngrok-free.app";
 
   // user
   static const String login = "$baseUAS/api/v1/auth/login";

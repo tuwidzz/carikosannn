@@ -10,7 +10,7 @@ import 'package:carikosannn/services/data_service.dart';
 import '../../widgets/admin_book.dart';
 
 class AdminScreen extends StatefulWidget {
-  const AdminScreen({Key? key}) : super(key: key);
+  const AdminScreen({super.key});
 
   @override
   _AdminScreenState createState() => _AdminScreenState();

@@ -12,8 +12,14 @@ class KosDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(kos.name),
+        title: Text(
+          kos.name,
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: Colors.brown,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -27,12 +33,12 @@ class KosDetailScreen extends StatelessWidget {
                 height: 400,
                 fit: BoxFit.cover,
               ),
+              // const SizedBox(height: 16),
+              // Text(
+              //   'Nama: ${kos.id}',
+              //   style: const TextStyle(fontSize: 16),
+              // ),
               const SizedBox(height: 16),
-              Text(
-                'Nama: ${kos.id}',
-                style: const TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 8),
               Text(
                 'Nama: ${kos.name}',
                 style: const TextStyle(fontSize: 16),

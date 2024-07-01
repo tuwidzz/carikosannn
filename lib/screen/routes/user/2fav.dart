@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:carikosannn/endpoints/endpoints.dart';
 import 'package:carikosannn/screen/widgets/detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +6,7 @@ import '../../../dto/kos.dart';
 class FavScreen extends StatefulWidget {
   final List<Kos> favoriteKosList;
 
-  const FavScreen({Key? key, required this.favoriteKosList});
+  const FavScreen({super.key, required this.favoriteKosList});
 
   @override
   _FavScreenState createState() => _FavScreenState();
@@ -61,7 +60,7 @@ class _FavScreenState extends State<FavScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: favoriteKosList.isEmpty
-            ? Center(
+            ? const Center(
                 child: Text(
                   'Belum ada kos favorit.',
                   style: TextStyle(fontSize: 18, color: Colors.grey),
@@ -92,7 +91,7 @@ class _FavScreenState extends State<FavScreen> {
                         title: Text(kos.name),
                         subtitle: Text(kos.description),
                         trailing: IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                           onPressed: () {
                             setState(() {
                               favoriteKosList.remove(kos);

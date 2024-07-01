@@ -3,7 +3,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../lib/screen/routes/user/1home.dart';
+import 'package:carikosannn/screen/routes/user/1home.dart';
 //import 'profil_screen.dart';
 
 class MainScreen extends StatefulWidget {

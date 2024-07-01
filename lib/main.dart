@@ -1,7 +1,7 @@
 // main.dart
 
 import 'package:carikosannn/cubit/auth/auth_cubit.dart';
-import 'package:carikosannn/endpoints/endpoints.dart';
+// import 'package:carikosannn/endpoints/endpoints.dart';
 import 'package:carikosannn/screen/routes/admin/1home.dart';
 // import 'package:carikosannn/screen/routes/apiip.dart';
 import 'package:carikosannn/utils/auth_wrapper.dart';
